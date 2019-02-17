@@ -45,6 +45,8 @@ class BoardContainer extends HTMLElement {
   connectedCallback() {
     this._root.appendChild(template.content.cloneNode(true));
     this.$columnContainer = this._root.querySelector('#column-container');
+    this.$boardHeader = this._root.querySelector('board-header');
+    this.$boardHeader.addEventListener('onSearch', this.searchCard.bind(this));
     this._fetchData();
   }
 
@@ -73,7 +75,7 @@ class BoardContainer extends HTMLElement {
       $item.setAttribute('title', column.title);
       $item.id = column.id;
 
-      const columnCards = this._data.cards.filter(item => item.columnId === column.id);
+      const columnCards = this._data.cards.filter(item => item.columnId === column.id && !item.hide);
       $item.cards = columnCards;
       $item.addEventListener('onUpdateColumn', this.updateColumn.bind(this));
       $item.addEventListener('onDeleteColumn', this.deleteColumn.bind(this));
@@ -86,6 +88,14 @@ class BoardContainer extends HTMLElement {
     const $boardColumnCreate = document.createElement('board-column-create');
     $boardColumnCreate.addEventListener('onCreateColumn', this.createColumn.bind(this));
     this.$columnContainer.appendChild($boardColumnCreate);
+  }
+
+  searchCard(e) {
+    this._queryText = e.detail.text;
+    this._data.cards.forEach((card) => {
+      card.hide = !(card.description.includes(this._queryText) || card.title.includes(this._queryText))
+    })
+    this._render();
   }
 
   updateColumn(e) {
@@ -142,7 +152,12 @@ class BoardContainer extends HTMLElement {
       .then(res => res.json())
       .then(response => {
         console.log('Success:', JSON.stringify(response));
-        this._data.cards.push(response);
+        this._data.cards.push(
+          {
+            ...response,
+            hide: this._queryText ? !(response.description.includes(this._queryText) || response.title.includes(this._queryText)) : false,
+          }
+        );
         this._render();
       })
       .catch(error => console.error('Error:', error));
