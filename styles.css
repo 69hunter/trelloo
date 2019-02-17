@@ -1,3 +1,7 @@
 body {
   margin: 0;
+  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.5em;
+  color: #333333;
+  font-weight: 300;
 }

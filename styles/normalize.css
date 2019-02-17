@@ -1,0 +1,15 @@
+input,
+select, 
+textarea, 
+button {
+  font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  line-height: 1.5em;
+  font-weight: 300;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none;
+}

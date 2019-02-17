@@ -1,5 +1,9 @@
 const template = document.createElement('template');
 template.innerHTML = `
+  <link rel="stylesheet" href="../../styles/normalize.css">
+  <link rel="stylesheet" href="../../styles/input-text.css">
+  <link rel="stylesheet" href="../../styles/textarea.css">
+  <link rel="stylesheet" href="../../styles/button.css">
   <style>
     :host {
       display: block;
@@ -7,24 +11,25 @@ template.innerHTML = `
       color: #333333;
       box-shadow: 0 0 6px 0 rgba(0,0,0,0.40);
       border-radius: 4px;
+      cursor: pointer;
     }
 
     .container {
       padding: 8px;
     }
 
-    .card-title {
-      margin-bottom: 8px;
-    }
-
     .card-title-edit {
-      margin-bottom: 8px;
       width: 100%;
       box-sizing: border-box;
     }
 
     .card-title-edit-error {
-      margin-bottom: 8px;
+      color: #ff0000;
+      font-size: 12px;
+    }
+
+    .card-details {
+      margin: 8px 0;
     }
 
     .card-description {
@@ -40,11 +45,11 @@ template.innerHTML = `
 
   <div class="container" draggable="true">
     <div class="card-title"></div>
-    <input class="card-title-edit" type="text" name="title"></input>
+    <input class="card-title-edit" type="text" name="title" placeholder="Title"></input>
     <div class="card-title-edit-error">Title should not repeat</div>
     <div class="card-details">
       <div class="card-description"></div>
-      <textarea class="card-description-edit"></textarea>
+      <textarea class="card-description-edit" rows="5" placeholder="Description"></textarea>
       <div id="primary-button-container">
         <button id="edit-button">Edit</button>
         <button id="delete-button">Delete</button>
