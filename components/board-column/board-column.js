@@ -65,7 +65,7 @@ template.innerHTML = `
       <button id="delete-button" class="icon-button">&#10006;</button>
     </div>
     <div class="column-header-edit">
-      <input class="column-title-edit" type="text" name="title"></input>
+      <input class="column-title-edit" type="text" name="title" placeholder="Title"></input>
       <div class="column-title-edit-error"></div>
       <div id="button-container">
         <button id="cancel-button" class="primary-button">Cancel</button>

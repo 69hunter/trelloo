@@ -36,7 +36,7 @@ template.innerHTML = `
   <div class="container">
     <div class="column-add">+ Add Column</div>
     <div class="column-edit">
-      <input class="column-title-edit" type="text" name="title"></input>
+      <input class="column-title-edit" type="text" name="title" name="title" placeholder="Title"></input>
       <div class="column-title-edit-error"></div>
       <div id="button-container">
         <button id="cancel-button" class="primary-button">Cancel</button>
