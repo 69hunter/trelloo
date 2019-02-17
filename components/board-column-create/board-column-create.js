@@ -12,6 +12,7 @@ template.innerHTML = `
       padding: 8px;
       border-radius: 4px;
       height: fit-content;
+      cursor: pointer;
     }
 
     .container {
