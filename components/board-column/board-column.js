@@ -156,6 +156,7 @@ class BoardColumn extends HTMLElement {
     this._cards.forEach((card) => {
       const $item = document.createElement('board-card');
       $item.setAttribute('all-cards', JSON.stringify(this._allCards));
+      $item.setAttribute('title', card.title);
       $item.content = card;
       $item.addEventListener('onCardUpdate', this.updateCard.bind(this));
       $item.addEventListener('onCardDelete', this.deleteCard.bind(this));
@@ -164,6 +165,7 @@ class BoardColumn extends HTMLElement {
 
     const $boardCardCreate = document.createElement('board-card-create');
     $boardCardCreate.setAttribute('all-cards', JSON.stringify(this._allCards));
+    $boardCardCreate.setAttribute('title', 'new card');
     $boardCardCreate.addEventListener('onCardCreate', this.createCard.bind(this));
     this.$columnContent.appendChild($boardCardCreate);
   }

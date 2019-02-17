@@ -89,6 +89,7 @@ class BoardContainer extends HTMLElement {
 
     const $boardColumnCreate = document.createElement('board-column-create');
     $boardColumnCreate.setAttribute('all-columns', JSON.stringify(this._data.columns));
+    $boardColumnCreate.setAttribute('title', 'new column');
     $boardColumnCreate.addEventListener('onCreateColumn', this.createColumn.bind(this));
     this.$columnContainer.appendChild($boardColumnCreate);
   }
