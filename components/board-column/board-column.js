@@ -34,6 +34,10 @@ template.innerHTML = `
       box-sizing: border-box;
     }
 
+    .column-title-edit-error {
+      margin-bottom: 8px;
+    }
+
     .column-title {
       flex: 1 0 auto;
     }
@@ -54,6 +58,7 @@ template.innerHTML = `
     </div>
     <div class="column-header-edit">
       <input class="column-title-edit" type="text" name="title"></input>
+      <div class="column-title-edit-error">Title should not repeat</div>
       <div id="button-container">
         <button id="cancel-button">Cancel</button>
         <button id="save-button">Save</button>
@@ -78,6 +83,7 @@ class BoardColumn extends HTMLElement {
     this.$columnHeaderEdit = this._root.querySelector('.column-header-edit');
     this.$columnTitle = this._root.querySelector('.column-title');
     this.$columnTitleEdit = this._root.querySelector('.column-title-edit');
+    this.$columnTitleEditError = this._root.querySelector('.column-title-edit-error');
     this.$columnContent = this._root.querySelector('.column-content');
     this.$deleteButton = this._root.querySelector('#delete-button');
     this.$cancelButton = this._root.querySelector('#cancel-button');
@@ -88,6 +94,10 @@ class BoardColumn extends HTMLElement {
     this.$columnHeader.addEventListener('click', (e) => {
       e.preventDefault();
       this.toggleEditMode();
+    });
+    this.$columnTitleEdit.addEventListener('input', (e) => {
+      e.preventDefault();
+      this.toggleEditError();
     });
     this.$deleteButton.addEventListener('click', (e) => {
       e.preventDefault();
@@ -111,11 +121,29 @@ class BoardColumn extends HTMLElement {
     })
   }
 
+  static get observedAttributes() {
+    return ['all-columns', 'all-cards'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'all-columns':
+        this._allColumns = JSON.parse(newValue);
+        break;
+      case 'all-cards':
+        this._allCards = JSON.parse(newValue);
+        break;
+      default:
+        break;
+    }
+  }
+
   _render() {
     this._renderColumnHeader();
 
     this._cards.forEach((card) => {
       const $item = document.createElement('board-card');
+      $item.setAttribute('all-cards', JSON.stringify(this._allCards));
       $item.content = card;
       $item.addEventListener('onCardUpdate', this.updateCard.bind(this));
       $item.addEventListener('onCardDelete', this.deleteCard.bind(this));
@@ -123,6 +151,7 @@ class BoardColumn extends HTMLElement {
     });
 
     const $boardCardCreate = document.createElement('board-card-create');
+    $boardCardCreate.setAttribute('all-cards', JSON.stringify(this._allCards));
     $boardCardCreate.addEventListener('onCardCreate', this.createCard.bind(this));
     this.$columnContent.appendChild($boardCardCreate);
   }
@@ -133,6 +162,14 @@ class BoardColumn extends HTMLElement {
     this.$columnHeaderEdit.hidden = true;
     this.$columnTitle.textContent = this._title;
     this.$columnTitleEdit.value = this._title;
+    this.$columnTitleEditError.hidden = true;
+  }
+
+  get repeatTitle() {
+    return this._allColumns
+      .filter(item => item.id !== parseInt(this._id, 10))
+      .map(item => item.title)
+      .includes(this.$columnTitleEdit.value);
   }
 
   toggleEditMode() {
@@ -141,11 +178,16 @@ class BoardColumn extends HTMLElement {
     this.$columnHeaderEdit.hidden = false;
   }
 
+  toggleEditError() {
+    this.$columnTitleEditError.hidden = !this.repeatTitle;
+  }
+
   onCancel() {
     this._renderColumnHeader();
   }
 
   onSave() {
+    if (this.repeatTitle) return;
     this._title = this.$columnTitleEdit.value;
     this._renderColumnHeader();
     this.dispatchEvent(new CustomEvent('onUpdateColumn', {

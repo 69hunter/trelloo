@@ -77,6 +77,8 @@ class BoardContainer extends HTMLElement {
 
       const columnCards = this._data.cards.filter(item => item.columnId === column.id && !item.hide);
       $item.cards = columnCards;
+      $item.setAttribute('all-cards', JSON.stringify(this._data.cards));
+      $item.setAttribute('all-columns', JSON.stringify(this._data.columns));
       $item.addEventListener('onUpdateColumn', this.updateColumn.bind(this));
       $item.addEventListener('onDeleteColumn', this.deleteColumn.bind(this));
       $item.addEventListener('onCreateCard', this.createCard.bind(this));
@@ -86,6 +88,7 @@ class BoardContainer extends HTMLElement {
     });
 
     const $boardColumnCreate = document.createElement('board-column-create');
+    $boardColumnCreate.setAttribute('all-columns', JSON.stringify(this._data.columns));
     $boardColumnCreate.addEventListener('onCreateColumn', this.createColumn.bind(this));
     this.$columnContainer.appendChild($boardColumnCreate);
   }
@@ -116,7 +119,7 @@ class BoardContainer extends HTMLElement {
           if (column.id === parseInt(id, 10)) column.title = response.title;
           return column;
         })
-        // this._render();
+        this._render();
       })
       .catch(error => console.error('Error:', error));
   }
@@ -187,7 +190,7 @@ class BoardContainer extends HTMLElement {
           }
           return card;
         })
-        // this._render();
+        this._render();
       })
       .catch(error => console.error('Error:', error));
   }

@@ -19,6 +19,10 @@ template.innerHTML = `
       box-sizing: border-box;
     }
 
+    .card-title-edit-error {
+      margin-bottom: 8px;
+    }
+
     .card-description-edit {
       margin-bottom: 8px;
       width: 100%;
@@ -30,6 +34,7 @@ template.innerHTML = `
     <div class="card-add">+ Add card</div>
     <div class="card-edit">
       <input class="card-title-edit" type="text" name="title"></input>
+      <div class="card-title-edit-error">Title should not repeat</div>
       <textarea class="card-description-edit"></textarea>
       <div id="button-container">
         <button id="cancel-button">Cancel</button>
@@ -50,6 +55,7 @@ class BoardCardCreate extends HTMLElement {
     this.$cardAdd = this._root.querySelector('.card-add');
     this.$cardEdit = this._root.querySelector('.card-edit');
     this.$cardTitleEdit = this._root.querySelector('.card-title-edit');
+    this.$cardTitleEditError = this._root.querySelector('.card-title-edit-error');
     this.$cardDescriptionEdit = this._root.querySelector('.card-description-edit');
     this.$cancelButton = this._root.querySelector('#cancel-button');
     this.$saveButton = this._root.querySelector('#save-button');
@@ -59,6 +65,10 @@ class BoardCardCreate extends HTMLElement {
     this.addEventListener('click', (e) => {
       e.preventDefault();
       this.toggleEditMode();
+    });
+    this.$cardTitleEdit.addEventListener('input', (e) => {
+      e.preventDefault();
+      this.toggleEditError();
     });
     this.$cancelButton.addEventListener('click', (e) => {
       e.preventDefault();
@@ -77,12 +87,33 @@ class BoardCardCreate extends HTMLElement {
     })
   }
 
+  static get observedAttributes() {
+    return ['all-cards'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'all-cards':
+        this._allCards = JSON.parse(newValue);
+        break;
+      default:
+        break;
+    }
+  }
+
   _render() {
     this._editMode = false;
     this.$cardAdd.hidden = false;
     this.$cardEdit.hidden = true;
     this.$cardTitleEdit.value = '';
     this.$cardDescriptionEdit.value = '';
+    this.$cardTitleEditError.hidden = true;
+  }
+
+  get repeatTitle() {
+    return this._allCards
+      .map(item => item.title)
+      .includes(this.$cardTitleEdit.value);
   }
 
   toggleEditMode() {
@@ -91,11 +122,16 @@ class BoardCardCreate extends HTMLElement {
     this.$cardEdit.hidden = false;
   }
 
+  toggleEditError() {
+    this.$cardTitleEditError.hidden = !this.repeatTitle;
+  }
+
   onCancel() {
     this._render();
   }
 
   onSave() {
+    if (this.repeatTitle) return;
     this.dispatchEvent(new CustomEvent('onCardCreate', {
       detail: {
         title: this.$cardTitleEdit.value,

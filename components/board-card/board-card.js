@@ -23,6 +23,10 @@ template.innerHTML = `
       box-sizing: border-box;
     }
 
+    .card-title-edit-error {
+      margin-bottom: 8px;
+    }
+
     .card-description {
       margin-bottom: 8px;
     }
@@ -37,6 +41,7 @@ template.innerHTML = `
   <div class="container">
     <div class="card-title"></div>
     <input class="card-title-edit" type="text" name="title"></input>
+    <div class="card-title-edit-error">Title should not repeat</div>
     <div class="card-details">
       <div class="card-description"></div>
       <textarea class="card-description-edit"></textarea>
@@ -64,6 +69,7 @@ class BoardCard extends HTMLElement {
 
     this.$cardTitle = this._root.querySelector('.card-title');
     this.$cardTitleEdit = this._root.querySelector('.card-title-edit');
+    this.$cardTitleEditError = this._root.querySelector('.card-title-edit-error');
     this.$cardDescription = this._root.querySelector('.card-description');
     this.$cardDescriptionEdit = this._root.querySelector('.card-description-edit');
     this.$cardDetails = this._root.querySelector('.card-details');
@@ -79,6 +85,10 @@ class BoardCard extends HTMLElement {
     this.addEventListener('click', (e) => {
       e.preventDefault();
       this.toggleDescription();
+    });
+    this.$cardTitleEdit.addEventListener('input', (e) => {
+      e.preventDefault();
+      this.toggleEditError();
     });
     this.$editButton.addEventListener('click', (e) => {
       e.preventDefault();
@@ -107,6 +117,20 @@ class BoardCard extends HTMLElement {
     })
   }
 
+  static get observedAttributes() {
+    return ['all-cards'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'all-cards':
+        this._allCards = JSON.parse(newValue);
+        break;
+      default:
+        break;
+    }
+  }
+
   _render(opendetail) {
     this._editMode = false;
     this.$primaryButtonContainer.hidden = false;
@@ -114,6 +138,7 @@ class BoardCard extends HTMLElement {
     this.$cardDetails.hidden = !opendetail;
     this.$cardTitle.hidden = false;
     this.$cardTitleEdit.hidden = true;
+    this.$cardTitleEditError.hidden = true;
     this.$cardDescription.hidden = false;
     this.$cardDescriptionEdit.hidden = true;
     this.$cardTitle.textContent = this._content.title;
@@ -122,9 +147,20 @@ class BoardCard extends HTMLElement {
     this.$cardDescriptionEdit.value = this._content.description;
   }
 
+  get repeatTitle() {
+    return this._allCards
+      .filter(item => item.id !== parseInt(this._content.id, 10))
+      .map(item => item.title)
+      .includes(this.$cardTitleEdit.value);
+  }
+
   toggleDescription() {
     if (this._editMode) return;
     this.$cardDetails.hidden = !this.$cardDetails.hidden;
+  }
+
+  toggleEditError() {
+    this.$cardTitleEditError.hidden = !this.repeatTitle;
   }
 
   onEdit() {
@@ -150,6 +186,7 @@ class BoardCard extends HTMLElement {
   }
 
   onSave() {
+    if (this.repeatTitle) return;
     this._content.title = this.$cardTitleEdit.value;
     this._content.description = this.$cardDescriptionEdit.value;
     this._render(true);
