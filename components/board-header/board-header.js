@@ -1,16 +1,21 @@
 const template = document.createElement('template');
 template.innerHTML = `
+  <link rel="stylesheet" href="../../styles/normalize.css">
+  <link rel="stylesheet" href="../../styles/input-search.css">
   <style>
     :host {
       flex: 0 0 auto;
       display: flex;
-      background-color: rgb(0, 0, 0, .15);
+      align-items: center;
+      background-color: rgb(0, 0, 0, .35);
       color: #ffffff;
       padding: 8px;
     }
 
     .header-title {
       flex: 1 0 auto;
+      font-size: 24px;
+      font-weight: 600;
     }
 
     .header-search {
