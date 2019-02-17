@@ -1,5 +1,9 @@
 const template = document.createElement('template');
 template.innerHTML = `
+  <link rel="stylesheet" href="../../styles/normalize.css">
+  <link rel="stylesheet" href="../../styles/input-text.css">
+  <link rel="stylesheet" href="../../styles/primary-button.css">
+  <link rel="stylesheet" href="../../styles/icon-button.css">
   <style>
     :host {
       display: block;
@@ -29,17 +33,21 @@ template.innerHTML = `
     }
 
     .column-title-edit {
-      margin-bottom: 8px;
       width: 100%;
       box-sizing: border-box;
     }
 
     .column-title-edit-error {
-      margin-bottom: 8px;
+      color: #ff0000;
+      font-size: 12px;
     }
 
     .column-title {
       flex: 1 0 auto;
+    }
+
+    #button-container {
+      margin-top: 8px;
     }
 
     #delete-button {
@@ -54,14 +62,14 @@ template.innerHTML = `
   <div class="container">
     <div class="column-header">
       <div class="column-title"></div>
-      <button id="delete-button">X</button>
+      <button id="delete-button" class="icon-button">&#10006;</button>
     </div>
     <div class="column-header-edit">
       <input class="column-title-edit" type="text" name="title"></input>
       <div class="column-title-edit-error">Title should not repeat</div>
       <div id="button-container">
-        <button id="cancel-button">Cancel</button>
-        <button id="save-button">Save</button>
+        <button id="cancel-button" class="primary-button">Cancel</button>
+        <button id="save-button" class="primary-button">Save</button>
       </div>
     </div>
     <div class="column-content"></div>

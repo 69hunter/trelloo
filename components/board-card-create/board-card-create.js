@@ -3,7 +3,7 @@ template.innerHTML = `
   <link rel="stylesheet" href="../../styles/normalize.css">
   <link rel="stylesheet" href="../../styles/input-text.css">
   <link rel="stylesheet" href="../../styles/textarea.css">
-  <link rel="stylesheet" href="../../styles/button.css">
+  <link rel="stylesheet" href="../../styles/primary-button.css">
   <style>
     :host {
       display: block;
@@ -42,8 +42,8 @@ template.innerHTML = `
       <div class="card-title-edit-error">Title should not repeat</div>
       <textarea class="card-description-edit" placeholder="Description"></textarea>
       <div id="button-container">
-        <button id="cancel-button">Cancel</button>
-        <button id="save-button">Save</button>
+        <button id="cancel-button" class="primary-button">Cancel</button>
+        <button id="save-button" class="primary-button">Save</button>
       </div>
     </div>
   </div>

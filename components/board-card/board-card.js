@@ -3,7 +3,7 @@ template.innerHTML = `
   <link rel="stylesheet" href="../../styles/normalize.css">
   <link rel="stylesheet" href="../../styles/input-text.css">
   <link rel="stylesheet" href="../../styles/textarea.css">
-  <link rel="stylesheet" href="../../styles/button.css">
+  <link rel="stylesheet" href="../../styles/primary-button.css">
   <style>
     :host {
       display: block;
@@ -51,12 +51,12 @@ template.innerHTML = `
       <div class="card-description"></div>
       <textarea class="card-description-edit" rows="5" placeholder="Description"></textarea>
       <div id="primary-button-container">
-        <button id="edit-button">Edit</button>
-        <button id="delete-button">Delete</button>
+        <button id="edit-button" class="primary-button">Edit</button>
+        <button id="delete-button" class="primary-button">Delete</button>
       </div>
       <div id="secondary-button-container">
-        <button id="cancel-button">Cancel</button>
-        <button id="save-button">Save</button>
+        <button id="cancel-button" class="primary-button">Cancel</button>
+        <button id="save-button" class="primary-button">Save</button>
       </div>
     </div>
   </div>

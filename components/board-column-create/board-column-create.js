@@ -1,5 +1,8 @@
 const template = document.createElement('template');
 template.innerHTML = `
+  <link rel="stylesheet" href="../../styles/normalize.css">
+  <link rel="stylesheet" href="../../styles/input-text.css">
+  <link rel="stylesheet" href="../../styles/primary-button.css">
   <style>
     :host {
       display: block;
@@ -15,18 +18,18 @@ template.innerHTML = `
       padding: 8px;
     }
 
-    .column-title {
-      margin-bottom: 8px;
-    }
-
     .column-title-edit {
-      margin-bottom: 8px;
       width: 100%;
       box-sizing: border-box;
     }
 
     .column-title-edit-error {
-      margin-bottom: 8px;
+      color: #ff0000;
+      font-size: 12px;
+    }
+
+    #button-container {
+      margin-top: 8px;
     }
   </style>
 
@@ -36,8 +39,8 @@ template.innerHTML = `
       <input class="column-title-edit" type="text" name="title"></input>
       <div class="column-title-edit-error">Title should not repeat</div>
       <div id="button-container">
-        <button id="cancel-button">Cancel</button>
-        <button id="save-button">Save</button>
+        <button id="cancel-button" class="primary-button">Cancel</button>
+        <button id="save-button" class="primary-button">Save</button>
       </div>
     </div>
   </div>
