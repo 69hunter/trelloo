@@ -91,6 +91,18 @@ class BoardColumn extends HTMLElement {
 
     this._render();
 
+    this.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      this.dragOverColumn(e);
+    })
+    this.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      this.dragLeaveColumn(e);
+    })
+    this.addEventListener('drop', (e) => {
+      e.preventDefault();
+      this.dropCard(e);
+    })
     this.$columnHeader.addEventListener('click', (e) => {
       e.preventDefault();
       this.toggleEditMode();
@@ -226,6 +238,24 @@ class BoardColumn extends HTMLElement {
 
   deleteCard(e) {
     this.dispatchEvent(new CustomEvent('onDeleteCard', { detail: e.detail }));
+  }
+
+  dragLeaveColumn(e) {
+    e.currentTarget.style.background = '#edeff0';
+  }
+
+  dragOverColumn(e) {
+    e.currentTarget.style.background = '#838C91';
+  }
+
+  dropCard(e) {
+    const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+    this.dispatchEvent(new CustomEvent('onUpdateCard', {
+      detail: {
+        ...data,
+        columnId: this._id,
+      }
+    }));
   }
 }
 

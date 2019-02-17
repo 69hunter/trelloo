@@ -38,7 +38,7 @@ template.innerHTML = `
     }
   </style>
 
-  <div class="container">
+  <div class="container" draggable="true">
     <div class="card-title"></div>
     <input class="card-title-edit" type="text" name="title"></input>
     <div class="card-title-edit-error">Title should not repeat</div>
@@ -67,6 +67,7 @@ class BoardCard extends HTMLElement {
     this._root.appendChild(template.content.cloneNode(true));
     this._content = this.content;
 
+    this.$container = this._root.querySelector('.container');
     this.$cardTitle = this._root.querySelector('.card-title');
     this.$cardTitleEdit = this._root.querySelector('.card-title-edit');
     this.$cardTitleEditError = this._root.querySelector('.card-title-edit-error');
@@ -86,6 +87,9 @@ class BoardCard extends HTMLElement {
       e.preventDefault();
       this.toggleDescription();
     });
+    this.$container.addEventListener('dragstart', (e) => {
+      this.dragStart(e);
+    })
     this.$cardTitleEdit.addEventListener('input', (e) => {
       e.preventDefault();
       this.toggleEditError();
@@ -114,7 +118,7 @@ class BoardCard extends HTMLElement {
       if (!this._root.contains(e.path[0])) {
         this._render();
       }
-    })
+    });
   }
 
   static get observedAttributes() {
@@ -197,6 +201,10 @@ class BoardCard extends HTMLElement {
         description: this.$cardDescriptionEdit.value,
       }
     }));
+  }
+
+  dragStart(e) {
+    e.dataTransfer.setData('text/plain', JSON.stringify(this._content));
   }
 }
 
