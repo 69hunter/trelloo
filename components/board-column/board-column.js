@@ -121,6 +121,10 @@ class BoardColumn extends HTMLElement {
       $item.addEventListener('onCardDelete', this.deleteCard.bind(this));
       this.$columnContent.appendChild($item);
     });
+
+    const $boardCardCreate = document.createElement('board-card-create');
+    $boardCardCreate.addEventListener('onCardCreate', this.createCard.bind(this));
+    this.$columnContent.appendChild($boardCardCreate);
   }
 
   _renderColumnHeader() {
@@ -155,6 +159,15 @@ class BoardColumn extends HTMLElement {
   onDelete() {
     this.dispatchEvent(new CustomEvent('onDeleteColumn', {
       detail: {
+        columnId: this._id,
+      }
+    }));
+  }
+
+  createCard(e) {
+    this.dispatchEvent(new CustomEvent('onCreateCard', {
+      detail: {
+        ...e.detail,
         columnId: this._id,
       }
     }));

@@ -77,10 +77,15 @@ class BoardContainer extends HTMLElement {
       $item.cards = columnCards;
       $item.addEventListener('onUpdateColumn', this.updateColumn.bind(this));
       $item.addEventListener('onDeleteColumn', this.deleteColumn.bind(this));
+      $item.addEventListener('onCreateCard', this.createCard.bind(this));
       $item.addEventListener('onUpdateCard', this.updateCard.bind(this));
       $item.addEventListener('onDeleteCard', this.deleteCard.bind(this));
       this.$columnContainer.appendChild($item);
     });
+
+    const $boardColumnCreate = document.createElement('board-column-create');
+    $boardColumnCreate.addEventListener('onCreateColumn', this.createColumn.bind(this));
+    this.$columnContainer.appendChild($boardColumnCreate);
   }
 
   updateColumn(e) {
@@ -118,6 +123,26 @@ class BoardContainer extends HTMLElement {
         console.log('Success:', JSON.stringify(response));
         this._data.columns = this._data.columns
           .filter(column => column.id !== parseInt(columnId, 10));
+        this._render();
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  createCard(e) {
+    const data = {
+      title: e.detail.title,
+      description: e.detail.description,
+      columnId: parseInt(e.detail.columnId, 10),
+    };
+    fetch(`http://localhost:3000/cards`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(response => {
+        console.log('Success:', JSON.stringify(response));
+        this._data.cards.push(response);
         this._render();
       })
       .catch(error => console.error('Error:', error));
@@ -163,6 +188,22 @@ class BoardContainer extends HTMLElement {
         console.log('Success:', JSON.stringify(response));
         this._data.cards = this._data.cards
           .filter(card => card.id !== parseInt(id, 10));
+        this._render();
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  createColumn(e) {
+    const data = e.detail;
+    fetch('http://localhost:3000/columns', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then(res => res.json())
+      .then(response => {
+        console.log('Success:', JSON.stringify(response));
+        this._data.columns.push(response);
         this._render();
       })
       .catch(error => console.error('Error:', error));
