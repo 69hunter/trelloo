@@ -66,7 +66,7 @@ template.innerHTML = `
     </div>
     <div class="column-header-edit">
       <input class="column-title-edit" type="text" name="title"></input>
-      <div class="column-title-edit-error">Title should not repeat</div>
+      <div class="column-title-edit-error"></div>
       <div id="button-container">
         <button id="cancel-button" class="primary-button">Cancel</button>
         <button id="save-button" class="primary-button">Save</button>
@@ -201,7 +201,15 @@ class BoardColumn extends HTMLElement {
   }
 
   toggleEditError() {
-    this.$columnTitleEditError.hidden = !this.repeatTitle;
+    if (this.repeatTitle) {
+      this.$columnTitleEditError.hidden = false;
+      this.$columnTitleEditError.textContent = 'Title should not repeat';
+    } else if (!this.$columnTitleEdit.value) {
+      this.$columnTitleEditError.hidden = false;
+      this.$columnTitleEditError.textContent = 'Title is required';
+    } else {
+      this.$columnTitleEditError.hidden = true;
+    }
   }
 
   onCancel() {
@@ -209,7 +217,7 @@ class BoardColumn extends HTMLElement {
   }
 
   onSave() {
-    if (this.repeatTitle) return;
+    if (this.repeatTitle || !this.$columnTitleEdit.value) return;
     this._title = this.$columnTitleEdit.value;
     this._renderColumnHeader();
     this.dispatchEvent(new CustomEvent('onUpdateColumn', {

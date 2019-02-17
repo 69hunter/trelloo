@@ -39,7 +39,7 @@ template.innerHTML = `
     <div class="card-add">+ Add card</div>
     <div class="card-edit">
       <input class="card-title-edit" type="text" name="title" placeholder="Title"></input>
-      <div class="card-title-edit-error">Title should not repeat</div>
+      <div class="card-title-edit-error"></div>
       <textarea class="card-description-edit" placeholder="Description"></textarea>
       <div id="button-container">
         <button id="cancel-button" class="primary-button">Cancel</button>
@@ -128,7 +128,15 @@ class BoardCardCreate extends HTMLElement {
   }
 
   toggleEditError() {
-    this.$cardTitleEditError.hidden = !this.repeatTitle;
+    if (this.repeatTitle) {
+      this.$cardTitleEditError.hidden = false;
+      this.$cardTitleEditError.textContent = 'Title should not repeat';
+    } else if (!this.$cardTitleEdit.value) {
+      this.$cardTitleEditError.hidden = false;
+      this.$cardTitleEditError.textContent = 'Title is required';
+    } else {
+      this.$cardTitleEditError.hidden = true;
+    }
   }
 
   onCancel() {
@@ -136,7 +144,8 @@ class BoardCardCreate extends HTMLElement {
   }
 
   onSave() {
-    if (this.repeatTitle) return;
+    this.toggleEditError();
+    if (this.repeatTitle || !this.$cardTitleEdit.value) return;
     this.dispatchEvent(new CustomEvent('onCardCreate', {
       detail: {
         title: this.$cardTitleEdit.value,

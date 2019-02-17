@@ -46,7 +46,7 @@ template.innerHTML = `
   <div class="container" draggable="true">
     <div class="card-title"></div>
     <input class="card-title-edit" type="text" name="title" placeholder="Title"></input>
-    <div class="card-title-edit-error">Title should not repeat</div>
+    <div class="card-title-edit-error"></div>
     <div class="card-details">
       <div class="card-description"></div>
       <textarea class="card-description-edit" rows="5" placeholder="Description"></textarea>
@@ -169,7 +169,15 @@ class BoardCard extends HTMLElement {
   }
 
   toggleEditError() {
-    this.$cardTitleEditError.hidden = !this.repeatTitle;
+    if (this.repeatTitle) {
+      this.$cardTitleEditError.hidden = false;
+      this.$cardTitleEditError.textContent = 'Title should not repeat';
+    } else if (!this.$cardTitleEdit.value) {
+      this.$cardTitleEditError.hidden = false;
+      this.$cardTitleEditError.textContent = 'Title is required';
+    } else {
+      this.$cardTitleEditError.hidden = true;
+    }
   }
 
   onEdit() {
@@ -195,7 +203,7 @@ class BoardCard extends HTMLElement {
   }
 
   onSave() {
-    if (this.repeatTitle) return;
+    if (this.repeatTitle || !this.$cardTitleEdit.value) return;
     this._content.title = this.$cardTitleEdit.value;
     this._content.description = this.$cardDescriptionEdit.value;
     this._render(true);
