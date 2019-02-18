@@ -10,7 +10,7 @@ template.innerHTML = `
 
     #scroll-container {
       display: flex;
-      flex: 1 0 auto;
+      flex: 1 1 auto;
       overflow-x: scroll;
       width: 100%;
     }
@@ -19,6 +19,7 @@ template.innerHTML = `
       display: inline-flex;
       padding: 8px;
       width: auto;
+      height: fit-content;
     }
 
     #column-container board-column:not(:last-child) {

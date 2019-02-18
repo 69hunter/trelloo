@@ -24,7 +24,7 @@ template.innerHTML = `
 
     .column-header {
       display: flex;
-      direction: row;
+      flex-direction: row;
       margin-bottom: 8px;
     }
 
